@@ -11,7 +11,7 @@ task_finish_buttons = {}
 completed_tasks = {}
 started_tasks = {}
 
-TOKEN = "7176559819:AAFVyC0TlGTsTLdO_wBBsusy97V-nGtFXkA"
+TOKEN = ""
 bot = telebot.TeleBot(TOKEN)
 
 channel_id = -1002161001933
