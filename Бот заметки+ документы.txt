@@ -1,0 +1,254 @@
+import telebot
+from telebot import types
+
+
+
+bot = telebot.TeleBot("6656965536:AAHVqijhts3sULwI5fg0Oay1pemp9DDxkAQ")
+tasks = []  # Список для хранения задач
+notes = []
+current_user_step = {}
+
+
+@bot.message_handler(content_types=['document'])
+def handle_document(message):
+   if message.document.mime_type == 'application/pdf':
+      document_id = message.document.file_id
+      bot.send_message(message.chat.id, f'ID PDF файла: {document_id}')
+   else:
+      bot.send_message(message.chat.id, 'Пожалуйста, отправьте PDF файл.')
+
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+    item1 = types.KeyboardButton("Заметки")
+    item2 = types.KeyboardButton("Документация")
+
+    markup.add(item1)
+    markup.add(item2)
+    first_name = message.from_user.first_name
+    bot.send_message(message.chat.id, f"Привет, {first_name}!"
+                                        " \nЯ - твой личный помощник 💁‍♂️! Предоставляю быстрый доступ к нужной документации, а также писать заметки для себя. Пользуйся 😊🚀 ",
+                       reply_markup=markup)
+
+
+  # Обработчик команды "Документация"
+
+@bot.message_handler(func=lambda message: message.text == "Документация")
+def documentation(message):
+      # Создаем клавиатуру с кнопками для выбора документации
+   markup = types.InlineKeyboardMarkup(row_width=2)
+   mi8t_button = types.InlineKeyboardButton("МИ-8Т", callback_data='mi8t')
+   mi8mtv_button = types.InlineKeyboardButton("МИ-8МТВ", callback_data='mi8mtv')
+   markup.add(mi8t_button, mi8mtv_button)
+   bot.send_message(message.chat.id, "Выберите тип ВС:", reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: call.data in ['mi8t', 'mi8mtv'])
+def handle_documentation_selection(call):
+   if call.data == 'mi8mtv':
+          # Создаем клавиатуру с кнопками для выбора раздела документации МИ-8МТВ
+    markup = types.InlineKeyboardMarkup(row_width=8)
+    regulations_pid_button = types.InlineKeyboardButton("Регламент ПиД", callback_data='regulationst_pid')
+    regulations_aireo_button = types.InlineKeyboardButton("Регламент АиРЭО", callback_data='regulationst_aireo')
+    book_1_button = types.InlineKeyboardButton("РТЭ Книга 1", callback_data='book_1_rto')
+    book_2_button = types.InlineKeyboardButton("РТЭ Книга 2", callback_data='book_2_rto')
+    book_3_button = types.InlineKeyboardButton("РТЭ Книга 3", callback_data='book_3_rto')
+    book_4_button = types.InlineKeyboardButton("РТЭ Книга 4", callback_data='book_4_rto')
+    book_5_button = types.InlineKeyboardButton("РТЭ Книга 5", callback_data='book_5_rto')
+    book_6_button = types.InlineKeyboardButton("РТЭ Книга 6", callback_data='book_6_rto')
+    book_7_button = types.InlineKeyboardButton("РТЭ Книга 7", callback_data='book_7_rto')
+    book_catal_button = types.InlineKeyboardButton("Каталог", callback_data='book_catal_rto')
+    book_eng_button = types.InlineKeyboardButton("ТВ3-117", callback_data='book_eng')
+    book_malfunction = types.InlineKeyboardButton("Поиск неисправностей", callback_data='book_malfunction')
+    markup.add(regulations_pid_button, regulations_aireo_button)
+    markup.add(book_1_button, book_2_button)
+    markup.add(book_3_button, book_4_button)
+    markup.add(book_5_button, book_6_button)
+    markup.add(book_7_button)
+    markup.add(book_catal_button)
+    markup.add(book_eng_button)
+    markup.add(book_malfunction)
+
+    bot.send_message(call.message.chat.id, "Выбирите документацию по Ми-8МТВ:", reply_markup=markup)
+
+   elif call.data == 'mi8t':
+          # Создаем клавиатуру с кнопками для выбора раздела документации МИ-8Т
+        markup = types.InlineKeyboardMarkup(row_width=2)
+        regulations_pid_button8t = types.InlineKeyboardButton("Регламент ПиД", callback_data='regulationst_pid8t')
+        regulations_aireo_button8t = types.InlineKeyboardButton("Регламент АиРЭО", callback_data='regulationst_aireo8t')
+        troubleshooting = types.InlineKeyboardButton("Поиск неисправностей", callback_data='troubleshooting')
+        book_catalMi8_button = types.InlineKeyboardButton("Каталог Д.У.", callback_data='book_catalMi8')
+        markup.add(regulations_pid_button8t, regulations_aireo_button8t)
+        markup.add(troubleshooting)
+        markup.add(book_catalMi8_button)
+        bot.send_message(call.message.chat.id, "Выбирите документацию по Ми-8Т:", reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'book_catalMi8')
+def book_catalMi8(call):
+    markup = types.InlineKeyboardMarkup(row_width=6)
+    book_catalMi81 = types.InlineKeyboardButton(" Книга 1", callback_data='book_catalMi81')
+    book_catalMi82 = types.InlineKeyboardButton(" Книга 2", callback_data='book_catalMi82')
+    book_catalMi83 = types.InlineKeyboardButton(" Книга 3", callback_data='book_catalMi83')
+    book_catalMi84 = types.InlineKeyboardButton(" Книга 4", callback_data='book_catalMi84')
+    markup.add(book_catalMi81, book_catalMi82)
+    markup.add(book_catalMi83, book_catalMi84)
+
+    bot.send_message(call.message.chat.id, "Выбирите каталог деталей и узлов", reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: call.data == "book_malfunction")
+def book_malfunction(call):
+   markup = types.InlineKeyboardMarkup(row_width=6)
+   book_malfunction1 = types.InlineKeyboardButton(" Книга 1", callback_data='book_malfunction1')
+   book_malfunction2 = types.InlineKeyboardButton(" Книга 2", callback_data='book_malfunction2')
+   markup.add(book_malfunction1, book_malfunction2)
+   bot.send_message(call.message.chat.id, "Книги наиболее часто встречающихся дефектов", reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "book_catal_rto")
+def book_catal_rto(call):
+    markup = types.InlineKeyboardMarkup(row_width=6)
+    book_catal1_button = types.InlineKeyboardButton(" Книга 1", callback_data='book_catal1_rto')
+    book_catal2_button = types.InlineKeyboardButton(" Книга 2", callback_data='book_catal2_rto')
+    markup.add(book_catal1_button, book_catal2_button)
+    bot.send_message(call.message.chat.id, "Выбирите каталог деталей и сборочных едениц:", reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "book_eng")
+def book_eng(call):
+    markup = types.InlineKeyboardMarkup(row_width=6)
+    book_1_eng = types.InlineKeyboardButton(" Книга 1", callback_data='book_1_eng')
+    book_2_eng = types.InlineKeyboardButton(" Книга 2", callback_data='book_2_eng')
+    book_3_eng = types.InlineKeyboardButton(" Книга 3", callback_data='book_3_eng')
+    book_4_eng = types.InlineKeyboardButton(" Каталог КДЭ", callback_data='book_4_eng')
+
+    markup.add(book_1_eng, book_2_eng)
+    markup.add(book_3_eng)
+    markup.add(book_4_eng)
+
+    bot.send_message(call.message.chat.id, "Выбирите книгу по двигателю ТВ3-117:", reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callback(call):
+    if call.data == 'book_7_rto':
+       file_id = "BQACAgIAAxkBAAMZZYloQb3BC1x07YS7mpe06o5vXbQAAs8_AALia0hIcySed8BMx5gzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_1_rto':
+       file_id = "BQACAgIAAxkBAAMNZYliqDLCIbVjpYXIjOuApFYhF9EAAoc_AALia0hIt9v4XNGEn5wzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_2_rto':
+       file_id = "BQACAgIAAxkBAAMPZYlktNy08J8o38vw_UYwjaaYWGEAAp0_AALia0hInfWjG6I8hYkzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_3_rto':
+       file_id = "BQACAgIAAxkBAAMRZYll8z9LKSTwikW9pcjowUhrGiAAAq8_AALia0hIvmc22E39ikczBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_4_rto':
+       file_id = "BQACAgIAAxkBAAMTZYlmQy712MgMZgTtlnKPp0IkoJYAArY_AALia0hI7GQ2TEJCeNIzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_5_rto':
+       file_id = "BQACAgIAAxkBAAMVZYlnXuZ-SEirM_81WORijvkUu7EAAsY_AALia0hICIANQOgj2LQzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_6_rto':
+       file_id = "BQACAgIAAxkBAAMXZYlnmVxJdN5NFPNlsWsy64ycGyUAAsk_AALia0hI-2fmvwVfWJEzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'regulationst_pid':
+       file_id = "BQACAgIAAxkBAAMJZYlh__CNCj1D9MCr_sTgm9n0_EIAAns_AALia0hIwTHLmqZH1cszBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'regulationst_aireo':
+       file_id = "BQACAgIAAxkBAAMLZYliNy_61t1wdGvDDJeVA-TLn6YAAoA_AALia0hIwK1zVkBGAAFvMwQ"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_catal1_rto':
+       file_id = "BQACAgIAAxkBAAMjZYlx7kkeWRBktqOO2zFyLXPLC3sAAmJAAALia0hI5K6YVgoPKuIzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_catal2_rto':
+       file_id = "BQACAgIAAxkBAAMhZYlwcFUTjbv3CuTXw2j8xxEGDrwAAkZAAALia0hIsUeB3SjexYMzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+      # Ми-8Т документы
+    elif call.data == 'regulationst_pid8t':
+       file_id = "BQACAgIAAxkBAAMbZYloytxyrs3XVcr-1nK8f-TyC5QAAtA_AALia0hIidhPbP0QdCIzBA"  # Replace with the actual file_id
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'regulationst_aireo8t':
+       file_id = "BQACAgIAAxkBAAMdZYltfZ0TikJVMw81airzNOWKV2MAAhZAAALia0hIl35bwkbBLaUzBA"  # Replace with the
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'troubleshooting':
+       file_id = "BQACAgIAAxkBAAMfZYlutj67j9CFkMcvbivSBuXWhyEAAiZAAALia0hI8fi4XTELM3AzBA"
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_1_eng':
+       file_id = "BQACAgIAAxkBAAMlZYlzfcHVGsEvS7m_DRxtDYdjg0oAAnBAAALia0hIxtCiNSTtLFwzBA"  # Replace with the actual
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_2_eng':
+       file_id = "BQACAgIAAxkBAAMwZYl0e9b3bcBZjZsRCQRbDYpt6o0AAndAAALia0hIiVNz9DQiZ70zBA"  # Replace with the actual
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_3_eng':
+       file_id = "BQACAgIAAxkBAANeZYl5wbtOnrVZi_RSxUSY4dZMQpMAArNAAALia0hIKZnfTTyZ8xkzBA"  # Replace with the actual
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_4_eng':
+       file_id = "BQACAgIAAxkBAANgZYl6Mn9xGmQTvhuWZeB-tAsklf4AArZAAALia0hISSZDjE1D2oMzBA"
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_malfunction1':
+       file_id = "BQACAgIAAxkBAANsZYl-RfThkxgBcD9_aGv__DBhGn4AAoQ8AAJIq0hI38Q5hqrgvMQzBA"
+       bot.send_document(call.message.chat.id, file_id)
+    elif call.data == 'book_malfunction2':
+       file_id = "BQACAgIAAxkBAANqZYl9vc7IG_P_uFW49CPqp5yYwGoAAtlAAALia0hIzU2dQe8GXfIzBA"
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_catalMi81':
+       file_id = "BQACAgIAAxkBAAOGZYmAQ9gvIL4KGS6o8CthrsUYXQMAAv5AAALia0hIAAGB8yrPlp2XMwQ"
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_catalMi82':
+       file_id = "BQACAgIAAxkBAAOIZYmBqzc4PlCs_PNz5tB_PM1DUNEAAhZBAALia0hINrlYc3gVIZczBA"
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_catalMi83':
+       file_id = "BQACAgIAAxkBAAOKZYmCLKobeU6OKnrzq1kLng2Lz4gAAiFBAALia0hI5upPvpURiOYzBA"
+       bot.send_document(call.message.chat.id, file_id)
+
+    elif call.data == 'book_catalMi84':
+       file_id = "BQACAgIAAxkBAAOMZYmCnL5C8qZhJWAQEG8t3FbZAAESAAIsQQAC4mtISELbT3kKAxMkMwQ"
+       bot.send_document(call.message.chat.id, file_id)
+
+
+@bot.message_handler(func=lambda message: message.text == "Заметки")
+def add_note_start(message):
+   current_user_step[message.chat.id] = "add_note_date"
+   bot.send_message(message.chat.id, "Добавьте заметку на будущее. Напишите дату внесения заметки:")
+
+
+@bot.message_handler(func=lambda message: current_user_step.get(message.chat.id) == "add_note_date")
+def save_note_date(message):
+   note_date = message.text
+   current_user_step[str(message.chat.id) + "note_date"] = note_date
+   current_user_step[message.chat.id] = "add_note_location"
+   bot.send_message(message.chat.id, "Отлично! Теперь напишите место события заметки:")
+
+
+@bot.message_handler(func=lambda message: current_user_step.get(message.chat.id) == "add_note_location")
+def save_note_location(message):
+   note_location = message.text
+   current_user_step[str(message.chat.id) + "note_location"] = note_location
+   current_user_step[message.chat.id] = "add_note_text"
+   bot.send_message(message.chat.id, "Отлично! Теперь напишите текст заметки:")
+
+
+@bot.message_handler(func=lambda message: current_user_step.get(message.chat.id) == "add_note_text")
+def save_note_text(message):
+   note_text = message.text
+   note_date = current_user_step[str(message.chat.id) + "note_date"]
+   note_location = current_user_step[str(message.chat.id) + "note_location"]
+   note = f"Дата: {note_date}\nМесто: {note_location}\nТекст: {note_text}"
+   notes.append(note)
+   bot.send_message(message.chat.id, "Заметка добавлена:\n" + note)
+   current_user_step[message.chat.id] = None
+
+
+if __name__ == "__main__":
+    if not bot.get_webhook_info().url:  # Check if the bot is already polling
+        bot.polling(none_stop=True)  # Start the bot polling
