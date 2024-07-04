@@ -3,7 +3,7 @@ from telebot import types
 
 
 
-bot = telebot.TeleBot("6656965536:AAHVqijhts3sULwI5fg0Oay1pemp9DDxkAQ")
+bot = telebot.TeleBot("")
 tasks = []  # Список для хранения задач
 notes = []
 current_user_step = {}
